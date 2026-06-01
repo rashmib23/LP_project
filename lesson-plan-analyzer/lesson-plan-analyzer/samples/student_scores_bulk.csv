@@ -1,0 +1,101 @@
+student_name,roll_no,assessment,score,max_score,remarks,lesson_plan_id
+Aarav Sharma,CS21001,Quiz 1,16,20,,1
+Priya Nair,CS21002,Quiz 1,18,20,,1
+Rohit Verma,CS21003,Quiz 1,11,20,Below average,1
+Sneha Patel,CS21004,Quiz 1,19,20,,1
+Kiran Reddy,CS21005,Quiz 1,8,20,Did not attempt 3 questions,1
+Ananya Iyer,CS21006,Quiz 1,20,20,Perfect score,1
+Mohammed Farhan,CS21007,Quiz 1,14,20,,1
+Divya Menon,CS21008,Quiz 1,15,20,,1
+Rahul Gupta,CS21009,Quiz 1,7,20,Needs revision,1
+Lakshmi Krishnan,CS21010,Quiz 1,17,20,,1
+Arjun Mehta,CS21011,Quiz 1,13,20,,1
+Pooja Desai,CS21012,Quiz 1,19,20,,1
+Siddharth Rao,CS21013,Quiz 1,10,20,,1
+Meera Pillai,CS21014,Quiz 1,16,20,,1
+Tarun Bose,CS21015,Quiz 1,12,20,,1
+Harini Subramaniam,CS21016,Quiz 1,18,20,,1
+Vikram Singh,CS21017,Quiz 1,11,20,,1
+Deepa Nambiar,CS21018,Quiz 1,15,20,,1
+Nikhil Joshi,CS21019,Quiz 1,9,20,Resubmission needed,1
+Kavya Balakrishnan,CS21020,Quiz 1,20,20,,1
+Aarav Sharma,CS21001,Lab Exam 2,32,40,,2
+Priya Nair,CS21002,Lab Exam 2,37,40,,2
+Rohit Verma,CS21003,Lab Exam 2,24,40,Incomplete JOIN queries,2
+Sneha Patel,CS21004,Lab Exam 2,38,40,,2
+Kiran Reddy,CS21005,Lab Exam 2,18,40,Syntax errors throughout,2
+Ananya Iyer,CS21006,Lab Exam 2,40,40,Excellent,2
+Mohammed Farhan,CS21007,Lab Exam 2,33,40,,2
+Divya Menon,CS21008,Lab Exam 2,29,40,,2
+Rahul Gupta,CS21009,Lab Exam 2,15,40,Absent for part of exam,2
+Lakshmi Krishnan,CS21010,Lab Exam 2,36,40,,2
+Arjun Mehta,CS21011,Lab Exam 2,27,40,,2
+Pooja Desai,CS21012,Lab Exam 2,39,40,,2
+Siddharth Rao,CS21013,Lab Exam 2,22,40,GROUP BY not used correctly,2
+Meera Pillai,CS21014,Lab Exam 2,34,40,,2
+Tarun Bose,CS21015,Lab Exam 2,28,40,,2
+Harini Subramaniam,CS21016,Lab Exam 2,36,40,,2
+Vikram Singh,CS21017,CS21017,25,40,,2
+Deepa Nambiar,CS21018,Lab Exam 2,31,40,,2
+Nikhil Joshi,CS21019,Lab Exam 2,20,40,,2
+Kavya Balakrishnan,CS21020,Lab Exam 2,38,40,,2
+Aarav Sharma,CS21001,Assignment 2,24,30,,3
+Priya Nair,CS21002,Assignment 2,27,30,,3
+Rohit Verma,CS21003,Assignment 2,18,30,Trace table incomplete,3
+Sneha Patel,CS21004,Assignment 2,29,30,,3
+Kiran Reddy,CS21005,Assignment 2,12,30,Missing failure analysis,3
+Ananya Iyer,CS21006,Assignment 2,30,30,Outstanding comparison table,3
+Mohammed Farhan,CS21007,Assignment 2,25,30,,3
+Divya Menon,CS21008,Assignment 2,22,30,,3
+Rahul Gupta,CS21009,Assignment 2,10,30,Late submission,3
+Lakshmi Krishnan,CS21010,Assignment 2,26,30,,3
+Arjun Mehta,CS21011,Assignment 2,20,30,,3
+Pooja Desai,CS21012,Assignment 2,28,30,,3
+Siddharth Rao,CS21013,Assignment 2,16,30,,3
+Meera Pillai,CS21014,Assignment 2,24,30,,3
+Tarun Bose,CS21015,Assignment 2,19,30,,3
+Harini Subramaniam,CS21016,Assignment 2,27,30,,3
+Vikram Singh,CS21017,Assignment 2,17,30,,3
+Deepa Nambiar,CS21018,Assignment 2,23,30,,3
+Nikhil Joshi,CS21019,Assignment 2,13,30,,3
+Kavya Balakrishnan,CS21020,Assignment 2,29,30,,3
+Aarav Sharma,CS21001,Assignment 3,29,35,,4
+Priya Nair,CS21002,Assignment 3,32,35,,4
+Rohit Verma,CS21003,Assignment 3,21,35,Weak justification,4
+Sneha Patel,CS21004,Assignment 3,34,35,,4
+Kiran Reddy,CS21005,Assignment 3,15,35,Test cases poorly designed,4
+Ananya Iyer,CS21006,Assignment 3,35,35,Excellent evaluation,4
+Mohammed Farhan,CS21007,Assignment 3,28,35,,4
+Divya Menon,CS21008,Assignment 3,25,35,,4
+Rahul Gupta,CS21009,Assignment 3,13,35,Incomplete,4
+Lakshmi Krishnan,CS21010,Assignment 3,30,35,,4
+Arjun Mehta,CS21011,Assignment 3,23,35,,4
+Pooja Desai,CS21012,Assignment 3,33,35,,4
+Siddharth Rao,CS21013,Assignment 3,19,35,,4
+Meera Pillai,CS21014,Assignment 3,28,35,,4
+Tarun Bose,CS21015,Assignment 3,22,35,,4
+Harini Subramaniam,CS21016,Assignment 3,31,35,,4
+Vikram Singh,CS21017,Assignment 3,20,35,,4
+Deepa Nambiar,CS21018,Assignment 3,26,35,,4
+Nikhil Joshi,CS21019,Assignment 3,16,35,,4
+Kavya Balakrishnan,CS21020,Assignment 3,34,35,,4
+Aarav Sharma,CS21001,Milestone 3,38,50,,5
+Priya Nair,CS21002,Milestone 3,44,50,,5
+Rohit Verma,CS21003,Milestone 3,30,50,API integration incomplete,5
+Sneha Patel,CS21004,Milestone 3,47,50,,5
+Kiran Reddy,CS21005,Milestone 3,22,50,Missing dashboard feature,5
+Ananya Iyer,CS21006,Milestone 3,50,50,Fully functional with extras,5
+Mohammed Farhan,CS21007,Milestone 3,40,50,,5
+Divya Menon,CS21008,Milestone 3,35,50,,5
+Rahul Gupta,CS21009,Milestone 3,18,50,Did not demo,5
+Lakshmi Krishnan,CS21010,Milestone 3,42,50,,5
+Arjun Mehta,CS21011,Milestone 3,33,50,,5
+Pooja Desai,CS21012,Milestone 3,46,50,,5
+Siddharth Rao,CS21013,Milestone 3,27,50,,5
+Meera Pillai,CS21014,Milestone 3,39,50,,5
+Tarun Bose,CS21015,Milestone 3,31,50,,5
+Harini Subramaniam,CS21016,Milestone 3,45,50,,5
+Vikram Singh,CS21017,Milestone 3,28,50,,5
+Deepa Nambiar,CS21018,Milestone 3,37,50,,5
+Nikhil Joshi,CS21019,Milestone 3,24,50,,5
+Kavya Balakrishnan,CS21020,Milestone 3,48,50,,5

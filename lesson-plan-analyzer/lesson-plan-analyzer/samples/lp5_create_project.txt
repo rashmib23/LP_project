@@ -1,0 +1,154 @@
+LESSON PLAN
+
+Faculty Name  : Dr. V. Anand
+Department    : Computer Science and Engineering
+Subject       : Web Technologies (CS602)
+Semester      : VI  |  Academic Year: 2025–2026
+Unit          : V – Full-Stack Development
+Topic         : Designing and Building a Full-Stack CRUD Application
+Duration      : 90 Minutes (Project Kick-off Session)
+Date          : 2 May 2026
+
+Course Outcome  : CO5 – Design and develop a full-stack web application integrating
+                  front-end, back-end, and database components.
+Program Outcome : PO3 – Design Solutions, PO5 – Engineering Practices, PO9 – Teamwork
+
+------------------------------------------------------------
+1. LEARNING OBJECTIVES
+------------------------------------------------------------
+By the end of this lesson, students will be able to:
+  a) Design the architecture of a three-tier web application (client, server, database).
+  b) Develop a RESTful API with CRUD endpoints using Node.js and Express.
+  c) Build a responsive front-end interface using React that consumes the API.
+  d) Formulate the database schema for the application using MySQL.
+  e) Create a complete working prototype integrating all three tiers.
+  f) Plan a project milestone timeline and assign team roles.
+
+Bloom's Level : Create (a–f)
+
+------------------------------------------------------------
+2. PREREQUISITE KNOWLEDGE
+------------------------------------------------------------
+  - HTML, CSS, JavaScript fundamentals (Unit I–II)
+  - Node.js basics and npm (Unit III)
+  - MySQL and SQL queries (Unit IV, prerequisite DBMS course)
+  - React components and state management (Unit IV)
+
+------------------------------------------------------------
+3. CONTENT OUTLINE
+------------------------------------------------------------
+
+3.1 Three-Tier Architecture Review (10 min)
+    • Presentation tier: React SPA running in the browser.
+    • Logic tier: Express.js REST API on Node.js.
+    • Data tier: MySQL relational database.
+    • Communication: HTTP/JSON between tiers; Axios on the client side.
+    • Deployment model: localhost for development; cloud-ready structure.
+
+3.2 Project Specification (15 min)
+    The semester project: build a Student Result Management System with:
+    • Entities: Student, Course, Enrollment, Grade.
+    • Features:
+      – Admin: add/edit/delete students and courses.
+      – Enroll students in courses and record grades.
+      – Dashboard: overall pass rate, top performers, grade distribution chart.
+    • Tech stack: React 18 + React Router, Express 4, MySQL 8, Axios.
+    • Deliverables:
+      – Milestone 1 (Week 12): ERD + API design document.
+      – Milestone 2 (Week 14): working API with Postman test evidence.
+      – Milestone 3 (Week 16): complete full-stack app + demo.
+      – Final Report: architecture, challenges, reflections.
+
+3.3 Architecture Design Workshop (25 min)
+    Teams of 3 students design their application:
+    Task 1 (10 min): Draw the ER diagram (entities, attributes, relationships).
+    Task 2 (10 min): Define the REST API endpoints (resource, method, request body,
+                     response structure) in a table.
+    Task 3 (5 min):  Sketch the React component tree (at least 5 components).
+    Each team uses a large sheet of paper / whiteboard section.
+
+3.4 Live Build – Skeleton Setup (30 min)
+    Instructor builds the project skeleton live (projected):
+    Step 1: npx create-react-app client; set up folder structure.
+    Step 2: mkdir server; npm init; install express, mysql2, cors, dotenv.
+    Step 3: Create server.js with a test GET /api/health endpoint.
+    Step 4: Set up MySQL connection pool in db.js.
+    Step 5: Create the Students table; insert 2 seed rows.
+    Step 6: Write GET /api/students and verify in Postman.
+    Step 7: Wire up Axios in React to fetch and display the student list.
+    Students replicate steps on their own laptops.
+
+3.5 Milestone Planning (5 min)
+    Each team fills in a milestone plan template (distributed):
+    team name, member roles (frontend, backend, database, testing), and
+    their intended feature extensions beyond the base specification.
+
+3.6 Q&A (5 min)
+    Open floor for questions on the project specification and tech stack.
+
+------------------------------------------------------------
+4. TEACHING METHODS AND STRATEGIES
+------------------------------------------------------------
+
+  Method 1 – Project-Based Learning (55 min total)
+    The entire session is structured around the semester project.
+    Students design, plan, and begin building a real deliverable.
+    Learning happens through constructing the artefact rather than
+    passive reception of content.
+
+  Method 2 – Live Demonstration / Walkthrough (30 min)
+    The instructor builds the skeleton live, narrating every decision.
+    Students replicate on their machines, promoting active participation
+    and immediate hands-on experience with the full stack.
+
+  Method 3 – Activity-Based Design Workshop (25 min)
+    Structured group activity with clear tasks and a physical output
+    (ER diagram, API table, component sketch) that teams will reference
+    throughout the project.
+
+  Method 4 – Discussion (5 min)
+    Open Q&A encourages inquiry into design decisions and invites
+    students to challenge the proposed architecture.
+
+------------------------------------------------------------
+5. ASSESSMENT STRATEGY
+------------------------------------------------------------
+
+  Formative:
+    • Design workshop artefacts collected and reviewed informally;
+      feedback given at Milestone 1 review.
+    • Milestone 1 sign-off (Week 12): ERD + API design document
+      reviewed and approved by instructor before coding begins.
+
+  Summative:
+    • Milestone 2 (Week 14): 10 marks — working Express API + Postman evidence.
+    • Milestone 3 (Week 16): 30 marks — complete app demo (live);
+      rubric: functionality 40%, code quality 20%, UI/UX 20%, integration 20%.
+    • Final Report (Week 17): 10 marks — 5-page report covering architecture,
+      schema, challenges, and reflections.
+    • Total project marks: 50 (50% of internal assessment).
+    • CO5 attainment: Create (Bloom's Level 6).
+
+------------------------------------------------------------
+6. RESOURCES AND MATERIALS
+------------------------------------------------------------
+  • Project specification document: Project_StudentResultMS_Spec.pdf
+  • Milestone plan template (printed, 1 per team)
+  • ER diagram / API table blank worksheet (A3, printed)
+  • Starter code scaffold: project_skeleton.zip (on LMS)
+  • Software: Node.js 20 LTS, MySQL 8, Postman, VS Code, React 18
+  • Reference: MDN Web Docs, Express.js documentation, React documentation
+
+------------------------------------------------------------
+7. CO-PO MAPPING
+------------------------------------------------------------
+  CO5 ↔ PO3 (Design Solutions)        : High (H)
+  CO5 ↔ PO5 (Engineering Practices)   : High (H)
+  CO5 ↔ PO9 (Teamwork)                : High (H)
+
+------------------------------------------------------------
+8. REMARKS / SELF-EVALUATION
+------------------------------------------------------------
+  Objectives achieved     : ___ / 6
+  Student engagement level: Low / Medium / High
+  Topics to revisit       : _______________________________

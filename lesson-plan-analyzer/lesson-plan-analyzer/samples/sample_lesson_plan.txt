@@ -1,0 +1,207 @@
+LESSON PLAN
+
+Faculty Name      : Dr. A. Ramesh
+Department        : Computer Science and Engineering
+Subject           : Machine Learning (CS601)
+Semester          : VI  |  Academic Year: 2025–2026
+Unit              : III – Model Evaluation and Optimization
+Topic             : Bias-Variance Tradeoff, Regularization (L1 & L2), and Cross-Validation
+Duration          : 90 Minutes (2 periods)
+Date              : 28 April 2026
+
+Course Outcome    : CO3 – Analyze and evaluate ML model performance using appropriate
+                   metrics and optimization strategies.
+Program Outcome   : PO2 – Problem Analysis, PO4 – Modern Tool Usage, PO9 – Individual
+                   and Teamwork
+
+------------------------------------------------------------
+1. LEARNING OBJECTIVES
+------------------------------------------------------------
+By the end of this lesson, students will be able to:
+
+  a) Recall the definitions of bias, variance, and the bias-variance tradeoff
+     in supervised machine learning.
+  b) Explain why high-bias models underfit and high-variance models overfit
+     training data using graphical illustrations.
+  c) Differentiate between L1 (Lasso) and L2 (Ridge) regularization in terms
+     of their mathematical formulations and effect on model coefficients.
+  d) Apply L1 and L2 regularization to a linear regression model using
+     scikit-learn and interpret the impact on test error.
+  e) Evaluate model generalization performance using k-Fold Cross-Validation
+     and select the optimal regularization hyperparameter via GridSearchCV.
+  f) Design a model selection pipeline that combines preprocessing,
+     regularization, and cross-validation for a real dataset.
+
+Bloom's Level     : Remember (a, b) → Understand / Differentiate (c) →
+                   Apply (d) → Evaluate (e) → Create / Design (f)
+
+------------------------------------------------------------
+2. PREREQUISITE KNOWLEDGE
+------------------------------------------------------------
+  - Linear and polynomial regression (Unit I)
+  - Cost functions and gradient descent (Unit II)
+  - Basic Python / NumPy / scikit-learn usage (Lab sessions 1–5)
+
+------------------------------------------------------------
+3. CONTENT OUTLINE
+------------------------------------------------------------
+
+3.1 Bias-Variance Tradeoff (20 min)
+    • Bias: error from wrong assumptions in the model; leads to underfitting.
+    • Variance: error from sensitivity to small fluctuations in training data;
+      leads to overfitting.
+    • Total expected error = Bias² + Variance + Irreducible noise.
+    • Visualization: training error vs. test error as model complexity increases
+      (U-shaped test error curve).
+    • Practical examples: linear model on non-linear data (high bias);
+      high-degree polynomial on small dataset (high variance).
+
+3.2 Regularization (25 min)
+    • Motivation: constrain model complexity to reduce variance without
+      dramatically increasing bias.
+
+    L2 Ridge Regression:
+      J(w) = MSE(w) + λ Σ wᵢ²
+      Effect: shrinks all coefficients toward zero; no coefficient becomes
+      exactly zero; closed-form solution exists.
+
+    L1 Lasso Regression:
+      J(w) = MSE(w) + λ Σ |wᵢ|
+      Effect: can drive some coefficients to exactly zero → automatic
+      feature selection; no closed-form; solved via coordinate descent.
+
+    Elastic Net (brief mention): combines L1 and L2 penalties.
+    Choosing λ: small λ → complex model; large λ → simple model.
+
+3.3 Cross-Validation (20 min)
+    • Holdout validation: simple but high variance due to single split.
+    • k-Fold CV: dataset split into k folds; model trained k times, each
+      time using a different fold as validation set. Final score = mean
+      of k validation scores.
+    • Stratified k-Fold: preserves class distribution in each fold.
+    • GridSearchCV in scikit-learn: exhaustive search over a parameter
+      grid using CV to find optimal hyperparameters.
+
+3.4 Hands-on Activity (20 min)
+    • Students load the California Housing dataset.
+    • Fit Ridge, Lasso, and plain LinearRegression for λ ∈ {0.01, 0.1, 1, 10}.
+    • Plot training vs. validation RMSE against log(λ).
+    • Identify the λ that minimises test RMSE and explain the trend in
+      non-zero coefficients for Lasso.
+
+3.5 Wrap-up and Q&A (5 min)
+    • Quick oral recap: what happens to bias and variance as λ increases?
+    • Preview of next class: Support Vector Machines (Unit IV).
+
+------------------------------------------------------------
+4. TEACHING METHODS AND STRATEGIES
+------------------------------------------------------------
+
+  Method 1 – Lecture with Whiteboard Demonstration (35 min)
+    The instructor will deliver a structured lecture using slides for the
+    theoretical portion. The bias-variance tradeoff will be drawn live on
+    the whiteboard to emphasize the U-shaped error curve. Mathematical
+    derivations of L1 and L2 penalties will be written step-by-step so
+    students can follow the algebra.
+
+  Method 2 – Demonstration / Live Coding (20 min)
+    The instructor will demonstrate a live Python notebook (projected on
+    screen) showing how Ridge and Lasso affect coefficient magnitudes.
+    Students follow along on their laptops or observe the screen.
+
+  Method 3 – Activity-Based / Hands-on Lab (20 min)
+    Students open the pre-distributed Jupyter notebook
+    (lab06_regularization.ipynb). In pairs, they complete the code cells,
+    interpret the plots, and answer three guided questions.
+
+  Method 4 – Discussion (10 min)
+    A whole-class think-pair-share discussion: "Which regularizer would
+    you choose if you suspect only 5 out of 20 features are relevant?
+    Justify your answer with reference to today's content."
+
+  Method 5 – Inquiry-based Reflection (5 min)
+    Students individually answer a one-minute paper: "What is one question
+    you still have about regularization?" Questions are collected and will
+    be addressed at the start of the next class.
+
+------------------------------------------------------------
+5. ASSESSMENT STRATEGY
+------------------------------------------------------------
+
+  Formative (In-class):
+    • Observation of pair activity: instructor circulates to check plots
+      and question responses; targeted feedback given on the spot.
+    • Think-pair-share verbal responses evaluated informally.
+    • One-minute paper collected for diagnostic purposes.
+
+  Summative (Post-class):
+    • Assignment 3 (due in 1 week):
+      Apply Ridge and Lasso regression to the "Student Performance" dataset
+      (provided on LMS). Tasks include:
+        (i)  Perform 10-fold CV to find the best λ for Ridge and Lasso.
+        (ii) Compare test RMSE for both regularizers and plain linear regression.
+        (iii) List the features eliminated by Lasso and interpret their
+              relevance to student performance.
+        (iv) Write a 200-word justification for the regularizer you would
+             recommend for deployment and the reasoning behind your choice.
+      Rubric: Correctness 40%, Analysis depth 30%, Visualization 20%,
+              Written justification 10%.
+
+    • Unit III Mid-term Quiz (Week 9):
+      Mix of numerical problems, short-answer, and one design question
+      covering bias-variance, regularization, and cross-validation.
+
+  CO Attainment Mapped:
+    CO3 – assessed via Assignment 3 and Unit III quiz.
+    Assessment level: Analyse (Bloom's Level 4), Evaluate (Level 5).
+
+------------------------------------------------------------
+6. RESOURCES AND MATERIALS
+------------------------------------------------------------
+  • Lecture slides: Unit3_Regularization.pptx (uploaded to LMS, 42 slides)
+  • Jupyter notebook: lab06_regularization.ipynb (distributed via LMS)
+  • Dataset: California Housing (sklearn.datasets.fetch_california_housing)
+  • Textbook: Aurélien Géron, "Hands-On Machine Learning with Scikit-Learn,
+    Keras & TensorFlow," 3rd Edition, Chapter 4 (pp. 130–162)
+  • Reference: Hastie, Tibshirani & Friedman, "The Elements of Statistical
+    Learning," 2nd Edition, Chapter 3
+  • Online: scikit-learn documentation – Ridge, Lasso, GridSearchCV
+  • Software: Python 3.10, scikit-learn 1.3, matplotlib, Jupyter Lab
+
+------------------------------------------------------------
+7. BLACKBOARD / WHITEBOARD PLAN
+------------------------------------------------------------
+  Left panel  : Bias-Variance decomposition formula and error curve sketch
+  Centre panel: L1 and L2 cost function formulas; geometric interpretation
+                (diamond vs. circle constraint regions)
+  Right panel : k-Fold CV diagram (5-fold illustration)
+
+------------------------------------------------------------
+8. ANTICIPATED STUDENT DIFFICULTIES AND MITIGATIONS
+------------------------------------------------------------
+  Difficulty 1: Confusion between bias and variance in practical terms.
+  Mitigation  : Use the dartboard analogy (clustered but off-centre = high
+                bias; spread out = high variance) before the formal definition.
+
+  Difficulty 2: Understanding why L1 produces sparse solutions.
+  Mitigation  : Draw the diamond constraint region and show geometrically
+                why the optimum often lands at a corner (coefficient = 0).
+
+  Difficulty 3: Interpreting GridSearchCV output.
+  Mitigation  : Walk through cv_results_ dictionary in the live demo;
+                highlight best_params_ and best_score_.
+
+------------------------------------------------------------
+9. CO-PO MAPPING
+------------------------------------------------------------
+  CO3 ↔ PO2 (Problem Analysis)    : High (H)
+  CO3 ↔ PO4 (Modern Tool Usage)   : High (H)
+  CO3 ↔ PO9 (Individual & Teamwork): Medium (M)
+
+------------------------------------------------------------
+10. REMARKS / SELF-EVALUATION (to be filled after class)
+------------------------------------------------------------
+  Objectives achieved     : ___ / 6
+  Student engagement level: Low / Medium / High
+  Topics to revisit       : _______________________________
+  Changes for next batch  : _______________________________

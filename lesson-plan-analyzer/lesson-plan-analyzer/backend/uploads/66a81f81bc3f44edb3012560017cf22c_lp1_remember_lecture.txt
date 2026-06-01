@@ -1,0 +1,122 @@
+LESSON PLAN
+
+Faculty Name  : Mr. P. Suresh
+Department    : Computer Science and Engineering
+Subject       : Data Structures (CS301)
+Semester      : III  |  Academic Year: 2025–2026
+Unit          : I – Introduction to Data Structures
+Topic         : Arrays, Stacks, and Queues – Definitions and Terminology
+Duration      : 60 Minutes
+Date          : 28 April 2026
+
+Course Outcome  : CO1 – Define and identify fundamental data structures and their properties.
+Program Outcome : PO1 – Engineering Knowledge
+
+------------------------------------------------------------
+1. LEARNING OBJECTIVES
+------------------------------------------------------------
+By the end of this lesson, students will be able to:
+  a) Define the terms: data structure, array, stack, queue, LIFO, FIFO.
+  b) List the basic operations supported by stacks and queues.
+  c) Identify the appropriate data structure for a given simple scenario.
+  d) Name and recall the index range of a one-dimensional array in C.
+  e) Label the components of a stack (top, base) and a queue (front, rear).
+  f) Match each data structure to its real-world analogy.
+
+Bloom's Level : Remember (a, b, c, d, e, f)
+
+------------------------------------------------------------
+2. PREREQUISITE KNOWLEDGE
+------------------------------------------------------------
+  - Basic C programming (variables, arrays, loops)
+  - Introduction to algorithms (Semester I)
+
+------------------------------------------------------------
+3. CONTENT OUTLINE
+------------------------------------------------------------
+
+3.1 What is a Data Structure? (10 min)
+    • Definition: a way of organizing and storing data in a computer so that
+      it can be accessed and modified efficiently.
+    • Classification: linear (arrays, stacks, queues, linked lists) and
+      non-linear (trees, graphs).
+    • Importance: choosing the right structure determines program efficiency.
+
+3.2 Arrays (15 min)
+    • Definition: a collection of elements of the same type stored in
+      contiguous memory locations.
+    • Indexing: zero-based in C; array A of size n has indices 0 to n-1.
+    • Declaration: int A[10]; — reserves 10 integer slots.
+    • Operations: access (A[i]), update (A[i]=val), traverse.
+    • Limitation: fixed size, insertion/deletion costly.
+
+3.3 Stacks (15 min)
+    • Definition: a linear data structure that follows the
+      Last-In First-Out (LIFO) principle.
+    • Real-world analogy: stack of plates — last plate placed is first removed.
+    • Components: top pointer, base.
+    • Basic operations: PUSH (insert), POP (delete), PEEK (view top), isEmpty.
+    • Applications: function call stack, undo operations, expression evaluation.
+
+3.4 Queues (15 min)
+    • Definition: a linear structure following First-In First-Out (FIFO).
+    • Real-world analogy: people waiting in a ticket queue.
+    • Components: front pointer, rear pointer.
+    • Basic operations: ENQUEUE (insert at rear), DEQUEUE (remove from front).
+    • Variants (names only): Circular queue, Priority queue, Deque.
+
+3.5 Recap and Q&A (5 min)
+    • Oral recall: students name one real-world use of a stack and a queue.
+
+------------------------------------------------------------
+4. TEACHING METHODS AND STRATEGIES
+------------------------------------------------------------
+
+  Method 1 – Lecture with Slides (40 min)
+    The instructor will deliver a lecture using prepared slides covering
+    all three data structures. Each concept is introduced with its formal
+    definition, followed by a diagram on the blackboard. Students are
+    expected to take notes.
+
+  Method 2 – Whiteboard Demonstration (15 min)
+    The instructor will draw memory diagrams for an array of size 5,
+    step through PUSH and POP operations on a stack of size 4, and
+    illustrate ENQUEUE/DEQUEUE on a queue using boxes on the board.
+
+  Method 3 – Verbal Questioning (5 min)
+    The instructor will call on students randomly to recall definitions
+    and identify the correct data structure for simple scenarios read aloud.
+
+------------------------------------------------------------
+5. ASSESSMENT STRATEGY
+------------------------------------------------------------
+
+  Formative (In-class):
+    • Verbal Q&A throughout the lecture (random student calling).
+    • Students write the definition of LIFO and FIFO on a slip of paper
+      at the end of class (exit ticket).
+
+  Summative:
+    • Quiz 1 (next class): 10 multiple-choice questions on definitions,
+      terminology, and identification of data structures. 20 marks, 20 min.
+    • CO1 attainment level: Remember (Bloom's Level 1).
+
+------------------------------------------------------------
+6. RESOURCES AND MATERIALS
+------------------------------------------------------------
+  • Lecture slides: Unit1_DSA_Intro.pptx (40 slides)
+  • Textbook: Ellis Horowitz, "Fundamentals of Data Structures in C," Chapter 1–2
+  • Blackboard diagrams prepared in advance
+  • Exit-ticket slips (printed, 1 per student)
+
+------------------------------------------------------------
+7. CO-PO MAPPING
+------------------------------------------------------------
+  CO1 ↔ PO1 (Engineering Knowledge) : High (H)
+
+------------------------------------------------------------
+8. REMARKS / SELF-EVALUATION
+------------------------------------------------------------
+  Objectives achieved     : ___ / 6
+  Student engagement level: Low / Medium / High
+  Topics to revisit       : _______________________________

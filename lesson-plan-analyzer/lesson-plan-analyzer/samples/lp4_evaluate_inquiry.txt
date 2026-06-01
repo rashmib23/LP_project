@@ -1,0 +1,156 @@
+LESSON PLAN
+
+Faculty Name  : Dr. N. Prakash
+Department    : Computer Science and Engineering
+Subject       : Software Engineering (CS502)
+Semester      : V  |  Academic Year: 2025–2026
+Unit          : IV – Software Testing
+Topic         : Evaluating Testing Strategies – Black-box vs. White-box Testing
+Duration      : 90 Minutes
+Date          : 1 May 2026
+
+Course Outcome  : CO4 – Evaluate software testing strategies and select appropriate
+                  techniques for a given system under test.
+Program Outcome : PO3 – Design Solutions, PO6 – Engineering Ethics
+
+------------------------------------------------------------
+1. LEARNING OBJECTIVES
+------------------------------------------------------------
+By the end of this lesson, students will be able to:
+  a) Evaluate the suitability of black-box and white-box testing for different
+     types of software modules.
+  b) Judge the adequacy of a test suite using coverage metrics
+     (statement, branch, path coverage).
+  c) Critique a given set of test cases and argue whether they sufficiently
+     validate the specified requirements.
+  d) Assess boundary value analysis and equivalence partitioning as test
+     design techniques and select between them.
+  e) Support a testing strategy recommendation with evidence from a provided
+     bug report and requirements document.
+  f) Validate a simple function using both black-box and white-box techniques
+     and compare the defects each method reveals.
+
+Bloom's Level : Evaluate (a–f)
+
+------------------------------------------------------------
+2. PREREQUISITE KNOWLEDGE
+------------------------------------------------------------
+  - SDLC and V-model (Unit I)
+  - Requirements specification and use-case diagrams (Unit II)
+  - Introduction to testing levels: unit, integration, system (Unit III)
+
+------------------------------------------------------------
+3. CONTENT OUTLINE
+------------------------------------------------------------
+
+3.1 Testing Strategy Overview (10 min)
+    • Purpose of testing: verify (built correctly) vs. validate (built right thing).
+    • Levels: unit, integration, system, acceptance.
+    • Perspective: developer testing (white-box) vs. tester testing (black-box).
+
+3.2 Black-Box Testing (20 min)
+    • Definition: tests based solely on I/O specification, no code visibility.
+    • Techniques:
+      – Equivalence Partitioning: divide input domain into valid/invalid classes.
+      – Boundary Value Analysis: test at and around boundaries (min, max, min±1).
+      – Decision Table Testing: for multi-condition logic.
+      – State Transition Testing: for systems with states.
+    • Strengths: requirements-focused, can be done without source code.
+    • Weaknesses: may miss internal logic paths.
+    • Coverage metric: requirement coverage.
+
+3.3 White-Box Testing (20 min)
+    • Definition: tests derived from internal code structure.
+    • Techniques:
+      – Statement Coverage: every executable statement executed at least once.
+      – Branch Coverage: every branch (true/false) of every decision covered.
+      – Path Coverage: every possible path through the program (often infeasible).
+      – Condition Coverage: each Boolean sub-expression true and false.
+    • Tools: JaCoCo (Java), coverage.py (Python), gcov (C).
+    • Strengths: reveals dead code, logic errors.
+    • Weaknesses: does not test against specification; not scalable to large systems.
+
+3.4 Inquiry Activity – Bug Report Analysis (25 min)
+    Students receive a 2-page packet containing:
+    • A short Python function (15 lines, login validation with 3 conditions).
+    • Its requirements specification.
+    • A bug report: three reported defects.
+    • A test suite of 6 existing test cases.
+
+    Questions students must investigate:
+    1. Which defects would the existing test suite detect? Justify.
+    2. Calculate the branch coverage of the existing suite.
+    3. Design two additional test cases using BVA to improve coverage.
+    4. Critique: does the suite adequately validate the requirements?
+       What testing technique gaps exist?
+    5. Which strategy (BB or WB) is more appropriate here? Defend your choice.
+
+    Students work in pairs; each pair produces a written response (10 min).
+    Selected pairs present findings and receive peer critique (15 min).
+
+3.5 Consolidation (5 min)
+    • Instructor provides model answers on screen.
+    • Open question: "Is 100% branch coverage sufficient to prove correctness?"
+      Students post a one-sentence answer on the class Padlet.
+
+------------------------------------------------------------
+4. TEACHING METHODS AND STRATEGIES
+------------------------------------------------------------
+
+  Method 1 – Lecture (30 min)
+    Structured delivery of black-box and white-box concepts with annotated
+    code examples and coverage calculation walk-throughs on the whiteboard.
+
+  Method 2 – Inquiry-Based Learning (25 min)
+    Students investigate the bug report packet by formulating answers to
+    structured questions — requires them to apply testing knowledge to
+    a realistic artefact rather than a textbook exercise.
+
+  Method 3 – Discussion / Peer Critique (15 min)
+    Pair presentations followed by peer questioning and instructor-moderated
+    debate on which strategy is preferable and why.
+
+  Method 4 – Demonstration (10 min)
+    Instructor demonstrates coverage.py on the login function to show
+    statement and branch coverage reports generated by a real tool.
+
+------------------------------------------------------------
+5. ASSESSMENT STRATEGY
+------------------------------------------------------------
+
+  Formative:
+    • Written pair responses to the inquiry packet (collected).
+    • Padlet one-sentence post on 100% branch coverage.
+    • Oral presentation quality and responses to peer questions.
+
+  Summative:
+    • Assignment 3 (due 1 week): given a 30-line inventory management
+      function and its specification, students must:
+      (i) Design a complete BB test suite using EP and BVA.
+      (ii) Design a WB test suite achieving 100% branch coverage.
+      (iii) Evaluate which suite is superior and justify in 300 words.
+      Marks: 35. CO4 attainment: Evaluate (Bloom's Level 5).
+
+    • End-semester exam: 1 design question + 1 evaluation question on testing.
+
+------------------------------------------------------------
+6. RESOURCES AND MATERIALS
+------------------------------------------------------------
+  • Slides: Unit4_Testing_Strategies.pptx (45 slides)
+  • Bug Report Packet: login_bugpack.pdf (printed per pair)
+  • coverage.py demonstration script: demo_coverage.py
+  • Textbook: Ian Sommerville, "Software Engineering," 10th Ed., Chapter 8
+  • Reference: IEEE 829 – Standard for Test Documentation
+
+------------------------------------------------------------
+7. CO-PO MAPPING
+------------------------------------------------------------
+  CO4 ↔ PO3 (Design Solutions)   : High (H)
+  CO4 ↔ PO6 (Engineering Ethics) : Medium (M)
+
+------------------------------------------------------------
+8. REMARKS / SELF-EVALUATION
+------------------------------------------------------------
+  Objectives achieved     : ___ / 6
+  Student engagement level: Low / Medium / High
+  Topics to revisit       : _______________________________
