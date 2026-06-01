@@ -361,21 +361,6 @@ All authenticated endpoints require an `Authorization: Bearer <token>` header.
 
 ---
 
-## Replacing the Synthetic Corpus
-
-`train/sample_data.py` returns
-`List[Tuple[text, bloom_label, strategy_label]]`. To train on real lesson
-plans, swap that function with one that loads your own labeled dataset
-(e.g. from CSV) and re-run:
-
-```bash
-python -m train.train_models
-```
-
-No other code changes are required.
-
----
-
 ## Tech Stack at a Glance
 
 | Layer            | Technologies                                                     |
