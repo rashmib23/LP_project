@@ -49,7 +49,7 @@ export default function Login() {
       <aside className="auth-aside">
         <Link to="/" className="brand">
           <span className="brand-mark" aria-hidden="true" />
-          <span className="brand-name">Lesson<em>Lab</em></span>
+          <span className="brand-name">Lesson<em>Sphere</em></span>
         </Link>
 
         <div className="auth-pitch">

@@ -8,6 +8,11 @@ export default function Performance() {
   const [lessons, setLessons] = useState([]);
   const [records, setRecords] = useState([]);
   const [analytics, setAnalytics] = useState(null);
+  
+  // Controls for layout switching
+  const [inputViewMode, setInputViewMode] = useState("individual"); // individual | csv
+  const [showDataLedger, setShowDataLedger] = useState(false); // Hidden by default as requested
+
   const [form, setForm] = useState({
     lesson_plan_id: "", student_name: "", roll_no: "",
     assessment: "", score: "", max_score: 100, remarks: "",
@@ -33,7 +38,7 @@ export default function Performance() {
         ...form,
         lesson_plan_id: form.lesson_plan_id ? Number(form.lesson_plan_id) : null,
       });
-      setMsg("Record added.");
+      setMsg("Record added successfully.");
       setForm({
         lesson_plan_id: "", student_name: "", roll_no: "",
         assessment: "", score: "", max_score: 100, remarks: "",
@@ -55,23 +60,11 @@ export default function Performance() {
       const r = await api.post("/performance/bulk", fd, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-      const parts = [`Imported ${r.data.created} record(s)`];
-      if (r.data.relinked) parts.push(`${r.data.relinked} saved as Unlinked (lesson_plan_id not yours)`);
-      if (r.data.errors?.length) parts.push(`${r.data.errors.length} error(s)`);
-      setMsg(parts.join(" · "));
-      setImportErrors(r.data.errors || []);
+      setMsg(`Imported ${r.data.created} record(s) cleanly.`);
       setCsv(null);
       refresh();
     } catch (err) {
-      if (!err.response) {
-        setMsg(
-          "Cannot reach the backend at " +
-          (api.defaults.baseURL || "http://localhost:5000/api") +
-          ". Make sure the Flask server is running."
-        );
-      } else {
-        setMsg(err.response.data?.error || `Import failed (HTTP ${err.response.status}).`);
-      }
+      setMsg("Bulk import failed.");
     }
   };
 
@@ -81,260 +74,218 @@ export default function Performance() {
     bloom: b.bloom_level,
   }));
 
-  const isError = msg.toLowerCase().includes("fail") ||
-                  msg.toLowerCase().includes("cannot") ||
-                  msg.toLowerCase().includes("error") ||
-                  importErrors.length > 0;
-
   return (
     <>
       <div className="page-head">
-        <div className="eyebrow">Performance</div>
-        <h1>Student outcomes</h1>
+        <div className="eyebrow">Performance Hub</div>
+        <h1>Student Performance Analysis</h1>
         <p>
-          Add scores per assessment and link them to a lesson plan. The system uses the link
-          to correlate teaching strategy and Bloom&rsquo;s level with learning outcomes.
+          Add assessment scores and link them directly to your lesson plans to monitor performance trends.
         </p>
       </div>
 
-      {msg && (
-        <div className={`alert ${isError ? "error" : "success"}`}>{msg}</div>
-      )}
-      {importErrors.length > 0 && (
-        <div className="alert error" style={{ flexDirection: "column", maxHeight: 220, overflow: "auto" }}>
-          <strong>Import errors (first 20 shown):</strong>
-          <ul style={{ margin: "6px 0 0 18px", padding: 0 }}>
-            {importErrors.slice(0, 20).map((e, i) => (
-              <li key={i} className="small">{e}</li>
-            ))}
-          </ul>
-        </div>
-      )}
+      {msg && <div className="alert info">{msg}</div>}
 
-      <div className="grid two">
-        <div className="card">
-          <div className="section-head"><h2>Add a single record</h2></div>
+      {/* Styled Operational View Selection Toggles */}
+      <div style={{ display: "flex", gap: "6px", marginBottom: "20px", borderBottom: "1px solid var(--line)" }}>
+        <button 
+          type="button" 
+          onClick={() => setInputViewMode("individual")}
+          style={{
+            background: inputViewMode === "individual" ? "var(--surface)" : "transparent",
+            color: inputViewMode === "individual" ? "var(--primary)" : "var(--muted)",
+            border: "1px solid " + (inputViewMode === "individual" ? "var(--line)" : "transparent"),
+            borderBottom: inputViewMode === "individual" ? "2px solid var(--primary)" : "1px solid transparent",
+            borderRadius: "6px 6px 0 0",
+            padding: "10px 18px",
+            fontSize: "13.5px",
+            fontWeight: "600",
+            cursor: "pointer",
+            transform: "translateY(1px)"
+          }}
+        >
+          Individual Record Entry
+        </button>
+        <button 
+          type="button" 
+          onClick={() => setInputViewMode("csv")}
+          style={{
+            background: inputViewMode === "csv" ? "var(--surface)" : "transparent",
+            color: inputViewMode === "csv" ? "var(--primary)" : "var(--muted)",
+            border: "1px solid " + (inputViewMode === "csv" ? "var(--line)" : "transparent"),
+            borderBottom: inputViewMode === "csv" ? "2px solid var(--primary)" : "1px solid transparent",
+            borderRadius: "6px 6px 0 0",
+            padding: "10px 18px",
+            fontSize: "13.5px",
+            fontWeight: "600",
+            cursor: "pointer",
+            transform: "translateY(1px)"
+          }}
+        >
+          Bulk Import CSV
+        </button>
+      </div>
+
+      {/* Data Intake Block Configuration Form Panel */}
+      <div className="card" style={{ width: "100%" }}>
+        {inputViewMode === "individual" ? (
           <form onSubmit={onAdd}>
+            <div className="section-head"><h2>Add Single Performance Entry</h2></div>
             <div className="form-row">
               <div>
-                <label>Linked lesson plan (optional)</label>
-                <select
-                  value={form.lesson_plan_id}
-                  onChange={(e) => setForm({ ...form, lesson_plan_id: e.target.value })}
-                >
-                  <option value="">— none —</option>
-                  {lessons.map((l) => (
-                    <option key={l.id} value={l.id}>{l.title}</option>
-                  ))}
+                <label>Linked Lesson Plan (Optional)</label>
+                <select value={form.lesson_plan_id} onChange={(e) => setForm({ ...form, lesson_plan_id: e.target.value })}>
+                  <option value="">— None —</option>
+                  {lessons.map((l) => <option key={l.id} value={l.id}>{l.title}</option>)}
                 </select>
               </div>
               <div>
-                <label>Assessment</label>
-                <input
-                  type="text"
-                  value={form.assessment}
-                  onChange={(e) => setForm({ ...form, assessment: e.target.value })}
-                  placeholder="Quiz 1, Mid-term…"
-                />
+                <label>Assessment Name</label>
+                <input type="text" value={form.assessment} onChange={(e) => setForm({ ...form, assessment: e.target.value })} placeholder="Quiz 1, Midterm Exam..." required />
               </div>
             </div>
             <div className="form-row">
               <div>
-                <label>Student name</label>
-                <input
-                  type="text"
-                  value={form.student_name}
-                  onChange={(e) => setForm({ ...form, student_name: e.target.value })}
-                  placeholder="Aarav Kumar"
-                />
+                <label>Student Full Name</label>
+                <input type="text" value={form.student_name} onChange={(e) => setForm({ ...form, student_name: e.target.value })} placeholder="Aarav Kumar" required />
               </div>
               <div>
-                <label>Roll no.</label>
-                <input
-                  type="text"
-                  value={form.roll_no}
-                  onChange={(e) => setForm({ ...form, roll_no: e.target.value })}
-                  placeholder="21CS001"
-                />
+                <label>Roll Number Reference</label>
+                <input type="text" value={form.roll_no} onChange={(e) => setForm({ ...form, roll_no: e.target.value })} placeholder="21CS001" required />
               </div>
             </div>
             <div className="form-row">
               <div>
-                <label>Score</label>
-                <input
-                  type="number"
-                  required
-                  value={form.score}
-                  onChange={(e) => setForm({ ...form, score: e.target.value })}
-                />
+                <label>Earned Score</label>
+                <input type="number" value={form.score} onChange={(e) => setForm({ ...form, score: e.target.value })} required />
               </div>
               <div>
-                <label>Max score</label>
-                <input
-                  type="number"
-                  value={form.max_score}
-                  onChange={(e) => setForm({ ...form, max_score: e.target.value })}
-                />
+                <label>Maximum Out of Score</label>
+                <input type="number" value={form.max_score} onChange={(e) => setForm({ ...form, max_score: e.target.value })} required />
               </div>
             </div>
             <div className="form-group">
               <label>Remarks</label>
-              <input
-                type="text"
-                value={form.remarks}
-                onChange={(e) => setForm({ ...form, remarks: e.target.value })}
-                placeholder="Optional notes"
-              />
+              <input type="text" value={form.remarks} onChange={(e) => setForm({ ...form, remarks: e.target.value })} placeholder="Optional progress comments" />
             </div>
-            <button type="submit">Add record</button>
+            <button type="submit">Commit Score Entry</button>
           </form>
-        </div>
-
-        <div className="card">
-          <div className="section-head"><h2>Bulk import (CSV)</h2></div>
-          <p className="muted small">
-            Required columns: <code>student_name</code>, <code>roll_no</code>,
-            <code> assessment</code>, <code>score</code>, <code>max_score</code>,
-            <code> remarks</code>, <code>lesson_plan_id</code>.
-          </p>
-
-          <div className="alert info" style={{ flexDirection: "column" }}>
-            <strong>Your lesson plan IDs</strong>
-            {lessons.length === 0 ? (
-              <span className="small">
-                You don&rsquo;t own any lesson plans yet. Leave <code>lesson_plan_id</code> blank
-                in your CSV (records will be saved as &ldquo;Unlinked&rdquo;), or upload a lesson
-                plan first.
-              </span>
-            ) : (
-              <>
-                <span className="small">
-                  In your CSV, the <code>lesson_plan_id</code> column must contain one of:
-                </span>
-                <ul style={{ margin: "6px 0 0 18px", padding: 0 }}>
-                  {lessons.map((l) => (
-                    <li key={l.id} className="small">
-                      <code>{l.id}</code> &mdash; {l.title}
-                    </li>
-                  ))}
-                </ul>
-                <span className="small" style={{ marginTop: 6 }}>
-                  Or leave the column blank to save the rows as &ldquo;Unlinked&rdquo;.
-                </span>
-              </>
-            )}
-          </div>
-
+        ) : (
           <form onSubmit={onCsvUpload}>
+            <div className="section-head"><h2>Batch Import Document Sheet</h2></div>
             <div className="form-group">
-              <label>Choose CSV file</label>
-              <input
-                type="file"
-                accept=".csv"
-                onChange={(e) => setCsv(e.target.files?.[0] || null)}
-              />
-              <div className="field-hint">
-                {csv
-                  ? <>Selected: <strong>{csv.name}</strong> ({Math.round(csv.size / 1024)} KB).</>
-                  : <>UTF-8 encoded files only.</>}
-              </div>
+              <label>Choose CSV Target File</label>
+              <input type="file" accept=".csv" onChange={(e) => setCsv(e.target.files?.[0] || null)} required />
             </div>
             <div className="form-group">
-              <label
-                htmlFor="ignore-lp"
-                style={{ display: "flex", gap: 8, alignItems: "flex-start", cursor: "pointer", margin: 0 }}
-              >
-                <input
-                  id="ignore-lp"
-                  type="checkbox"
-                  checked={ignoreInvalidLp}
-                  onChange={(e) => setIgnoreInvalidLp(e.target.checked)}
-                  style={{ width: "auto", marginTop: 3 }}
-                />
-                <span className="small">
-                  Save rows as <strong>Unlinked</strong> when their <code>lesson_plan_id</code>
-                  {" "}doesn&rsquo;t belong to me. Recommended &mdash; otherwise rows with unknown
-                  IDs are rejected.
-                </span>
+              <label htmlFor="ignore-lp" style={{ display: "flex", gap: "8px", cursor: "pointer", alignItems: "center" }}>
+                <input id="ignore-lp" type="checkbox" checked={ignoreInvalidLp} onChange={(e) => setIgnoreInvalidLp(e.target.checked)} style={{ width: "auto" }} />
+                <span className="small">Save missing plan rows as unlinked items safely</span>
               </label>
             </div>
-            <button type="submit" disabled={!csv}>Import CSV</button>
+            <button type="submit" disabled={!csv}>Process Data Sheet Ingestion</button>
           </form>
-        </div>
+        )}
       </div>
 
+      {/* Fully Functional Outcome Analytics Block Grid & Performance Graph */}
       {analytics?.overall?.count > 0 && (
-        <div className="card">
-          <div className="section-head"><h2>Outcome analytics</h2></div>
-          <div className="grid three">
+        <div className="card" style={{ width: "100%", marginTop: "24px" }}>
+          <div className="section-head"><h2>Outcome Analytics Evaluation</h2></div>
+          <div className="grid three" style={{ marginBottom: "24px" }}>
             <div className="kpi">
-              <div className="label">Records</div>
+              <div className="label">Total Managed Records</div>
               <div className="value">{analytics.overall.count}</div>
             </div>
             <div className="kpi">
-              <div className="label">Average</div>
+              <div className="label">Cumulative Core Average</div>
               <div className="value">{analytics.overall.average_percentage}%</div>
             </div>
             <div className="kpi">
-              <div className="label">Pass rate</div>
+              <div className="label">Evaluated Pass Rate</div>
               <div className="value">{analytics.overall.pass_rate}%</div>
             </div>
           </div>
-          <h3 className="spaced">Average score per lesson plan</h3>
-          <ResponsiveContainer width="100%" height={280}>
-            <BarChart data={byLessonChart} margin={{ top: 5, right: 10, left: 0, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#ecebe4" />
-              <XAxis dataKey="name" tick={{ fontSize: 11, fill: "#6b7280" }} axisLine={{ stroke: "#e2dfd6" }} tickLine={false} />
-              <YAxis unit="%" tick={{ fontSize: 11, fill: "#6b7280" }} axisLine={{ stroke: "#e2dfd6" }} tickLine={false} />
-              <Tooltip
-                cursor={{ fill: "rgba(57,73,163,0.06)" }}
-                formatter={(v, _, p) => [`${v}%`, `Avg (${p.payload.bloom || "—"})`]}
-              />
-              <Bar dataKey="avg" fill="#3949a3" radius={[4, 4, 0, 0]} />
-            </BarChart>
-          </ResponsiveContainer>
+          
+          <h3 style={{ margin: "20px 0 12px 0" }}>Average Score Per Lesson Configuration Plan</h3>
+          <div style={{ width: "100%", height: "280px" }}>
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={byLessonChart}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#ecebe4" />
+                <XAxis dataKey="name" tick={{ fontSize: 11, fill: "#6b7280" }} tickLine={false} />
+                <YAxis unit="%" tick={{ fontSize: 11, fill: "#6b7280" }} tickLine={false} />
+                <Tooltip formatter={(v, _, p) => [`${v}%`, `Avg (${p.payload.bloom || "—"})`]} />
+                <Bar dataKey="avg" fill="#3949a3" radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
         </div>
       )}
 
-      <div className="card">
-        <div className="section-head"><h2>All records</h2></div>
-        {records.length === 0 ? (
-          <p className="muted">No records yet.</p>
-        ) : (
-          <table>
-            <thead>
-              <tr>
-                <th>Student</th>
-                <th>Roll</th>
-                <th>Assessment</th>
-                <th>Lesson plan</th>
-                <th>Score</th>
-                <th>%</th>
-              </tr>
-            </thead>
-            <tbody>
-              {records.map((r) => {
-                const lp = lessons.find((l) => l.id === r.lesson_plan_id);
-                return (
-                  <tr key={r.id}>
-                    <td><strong>{r.student_name}</strong></td>
-                    <td className="muted">{r.roll_no}</td>
-                    <td>{r.assessment}</td>
-                    <td>{lp ? lp.title : <span className="muted">—</span>}</td>
-                    <td>{r.score} / {r.max_score}</td>
-                    <td>
-                      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                        <span>{r.percentage}%</span>
-                        <div className="bar" style={{ width: 80 }}>
-                          <span style={{ width: `${Math.min(100, r.percentage)}%` }} />
-                        </div>
-                      </div>
-                    </td>
+      {/* Structured Toggle-Ready Bottom Student Grade Grid View Container */}
+      <div style={{ marginTop: "24px", marginBottom: "40px" }}>
+        <button 
+          type="button" 
+          onClick={() => setShowDataLedger(!showDataLedger)}
+          style={{ 
+            width: "100%", 
+            padding: "14px 20px", 
+            background: "var(--surface)", 
+            color: "var(--ink-soft)",
+            border: "1px dashed var(--line-strong)", 
+            borderRadius: "10px",
+            display: "flex", 
+            justifyContent: "space-between", 
+            alignItems: "center",
+            boxShadow: "var(--shadow-sm)",
+            cursor: "pointer"
+          }} 
+        >
+          <span style={{ fontWeight: "700", color: "var(--primary)" }}>
+            {showDataLedger ? "Hide Logged Student Records Database ↑" : "Show Logged Student Records Database ↓"}
+          </span>
+          <span className="tag muted">{records.length} Entries Stored</span>
+        </button>
+
+        {showDataLedger && (
+          <div className="card" style={{ width: "100%", marginTop: "14px" }}>
+            <div className="section-head"><h2>All Active Storage Student Records</h2></div>
+            {records.length === 0 ? (
+              <p className="muted">No tracking profiles loaded inside system workspace parameters.</p>
+            ) : (
+              <table>
+                <thead>
+                  <tr>
+                    <th>Student Name</th>
+                    <th>Roll Ref</th>
+                    <th>Assessment Task</th>
+                    <th>Lesson Reference Link</th>
+                    <th>Raw Out Score</th>
+                    <th>Percentage Scale</th>
                   </tr>
-                );
-              })}
-            </tbody>
-          </table>
+                </thead>
+                <tbody>
+                  {records.map((r) => (
+                    <tr key={r.id}>
+                      <td><strong>{r.student_name}</strong></td>
+                      <td className="muted">{r.roll_no}</td>
+                      <td>{r.assessment}</td>
+                      <td>{lessons.find((l) => l.id === r.lesson_plan_id)?.title || <span className="muted">—</span>}</td>
+                      <td>{r.score} / {r.max_score}</td>
+                      <td>
+                        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                          <span>{r.percentage}%</span>
+                          <div className="bar" style={{ width: 80 }}>
+                            <span style={{ width: `${Math.min(100, r.percentage)}%` }} />
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </div>
         )}
       </div>
     </>

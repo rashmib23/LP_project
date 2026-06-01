@@ -125,20 +125,6 @@ export default function Results() {
         )}
       </div>
 
-      <div className="card">
-        <div className="section-head"><h2>Analysis details</h2></div>
-        <p className="muted" style={{ marginBottom: 12 }}>
-          {lesson.analysis?.word_count} words &middot; {lesson.analysis?.sentence_count} sentences &middot;
-          {" "}sections detected: {(lesson.analysis?.sections_detected || []).join(", ") || "—"}
-        </p>
-        {lesson.analysis?.missing_sections?.length > 0 && (
-          <div>
-            <span className="tag bad">Missing sections</span>{" "}
-            <span className="muted">{lesson.analysis.missing_sections.join(", ")}</span>
-          </div>
-        )}
-      </div>
-
       {lesson.performance && lesson.performance.length > 0 && (
         <div className="card">
           <div className="section-head"><h2>Linked student performance</h2></div>

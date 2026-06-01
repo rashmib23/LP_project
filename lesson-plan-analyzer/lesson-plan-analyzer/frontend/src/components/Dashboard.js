@@ -3,11 +3,6 @@ import { Link } from "react-router-dom";
 import api from "../api";
 import { useAuth } from "../context/AuthContext";
 
-const bloomClass = (level) => {
-  if (!level) return "muted";
-  return "bloom-" + level.toLowerCase();
-};
-
 export default function Dashboard() {
   const { user } = useAuth();
   const [lessons, setLessons] = useState([]);
@@ -21,94 +16,87 @@ export default function Dashboard() {
     ]).finally(() => setLoading(false));
   }, []);
 
-  const firstName = user?.name?.split(" ")[0] || "Teacher";
-  const totalLessons = lessons.length;
-  const avgPct = analytics?.overall?.average_percentage;
-  const passRate = analytics?.overall?.pass_rate;
-  const records = analytics?.overall?.count;
+  const firstName = user?.name?.split(" ")[0] || "Professor";
 
   return (
     <>
-      <section className="hero">
+      {/* Explicit Project Details Container */}
+      <section className="hero" style={{ width: "100%", borderRadius: "12px", padding: "40px", marginBottom: "24px" }}>
         <div className="page-head" style={{ marginBottom: 0 }}>
-          <div className="eyebrow" style={{ color: "rgba(255,255,255,0.7)" }}>
-            Dashboard
-          </div>
-          <h1>Good to see you, {firstName}.</h1>
-          <p>
-            Run a fresh analysis, review your past lesson plans, or link student scores
-            to see which designs are actually moving outcomes.
+          <div className="eyebrow" style={{ color: "rgba(255,255,255,0.7)", letterSpacing: "1.5px" }}>Welcome Back, {firstName}</div>
+          <h1 style={{ color: "#fff", fontSize: "36px", marginBottom: "12px" }}>LessonSphere</h1>
+          <p style={{ marginTop: "14px", fontSize: "15.5px", lineHeight: "1.7", color: "rgba(255,255,255,0.9)", maxWidth: "900px" }}>
+            LessonSphere  is an advanced pedagogical intelligence system designed to optimize course engineering and evaluate instructional alignment. By analyzing lesson documentation with semantic classification transformers, the platform bridges structural curriculum design with concrete, data-proven student learning outcomes.
           </p>
-        </div>
-        <div className="actions">
-          <Link to="/upload"><span className="btn">Analyze a lesson plan</span></Link>
-          <Link to="/performance"><span className="btn secondary">Add student scores</span></Link>
         </div>
       </section>
 
-      <div className="grid four">
+      {/* Embedded Live Metric Analytics Row Section */}
+      <h2 style={{ margin: "32px 0 16px 0", fontSize: "20px" }}>Real-time Platform Metrics</h2>
+      <div className="grid four" style={{ marginBottom: "32px" }}>
         <div className="kpi">
-          <div className="label">Lessons analyzed</div>
-          <div className="value">{loading ? "—" : totalLessons}</div>
-          <div className="sub">{totalLessons === 0 ? "Upload your first plan" : "Across your account"}</div>
+          <div className="label">Documents Assessed</div>
+          <div className="value">{loading ? "—" : lessons.length}</div>
+          <div className="sub">Processed Course Profiles</div>
         </div>
         <div className="kpi">
-          <div className="label">Performance records</div>
-          <div className="value">{loading ? "—" : (records ?? 0)}</div>
-          <div className="sub">Linked to lesson plans</div>
+          <div className="label">Outcome Logs Linked</div>
+          <div className="value">{loading ? "—" : (analytics?.overall?.count ?? 0)}</div>
+          <div className="sub">Individual Scores Mapped</div>
         </div>
         <div className="kpi">
-          <div className="label">Average score</div>
-          <div className="value">{avgPct != null ? `${avgPct}%` : "—"}</div>
-          <div className="sub">Across all assessments</div>
+          <div className="label">Class Score Average</div>
+          <div className="value">{analytics?.overall?.average_percentage ? `${analytics.overall.average_percentage}%` : "—"}</div>
+          <div className="sub">Global Module Performance</div>
         </div>
         <div className="kpi">
-          <div className="label">Pass rate</div>
-          <div className="value">{passRate != null ? `${passRate}%` : "—"}</div>
-          <div className="sub">≥ 40% threshold</div>
+          <div className="label">Evaluated Pass Rate</div>
+          <div className="value">{analytics?.overall?.pass_rate ? `${analytics.overall.pass_rate}%` : "—"}</div>
+          <div className="sub">Passing Criteria Metric Threshold</div>
         </div>
       </div>
 
-      <div className="card">
-        <div className="section-head">
-          <h2>Recent lesson plans</h2>
-          {lessons.length > 0 && <Link to="/history" className="small">View all</Link>}
+      {/* Reconfigured Project Overview Area */}
+      <div className="card" style={{ width: "100%", marginBottom: "24px", borderLeft: "4px solid var(--primary)" }}>
+        <div className="section-head" style={{ borderBottom: "1px solid var(--line)", paddingBottom: "12px", marginBottom: "16px" }}>
+          <h2>Project Overview</h2>
         </div>
+        <p style={{ lineHeight: "1.65", color: "var(--ink-soft)", fontSize: "14.5px" }}>
+          Modern education frameworks demand absolute tracking between defined curriculum strategies and quantitative student evaluations. However, mapping lesson plans manually is highly subjective, prone to formatting gaps, and completely detached from physical student performance tables. 
+        </p>
+        <p style={{ lineHeight: "1.65", color: "var(--ink-soft)", marginTop: "12px", fontSize: "14.5px" }}>
+          <strong>LessonSphere  addresses this bottleneck by automating systemic validation tasks:</strong> It ingests raw textual files, extracts embedded strategic indicators, breaks down objective clusters, and highlights instructional delivery gaps before a professor steps into the classroom.
+        </p>
+      </div>
 
-        {loading ? (
-          <p className="muted">Loading your plans…</p>
-        ) : lessons.length === 0 ? (
-          <div className="empty">
-            <h3>No lesson plans yet</h3>
-            <p>Upload a PDF, DOCX, or TXT and get an instant Bloom&rsquo;s + strategy classification.</p>
-            <Link to="/upload"><button>Upload a lesson plan</button></Link>
+      {/* Refactored High-Effectiveness Workflow Blueprint */}
+      <div className="card" style={{ width: "100%", background: "linear-gradient(180deg, #ffffff 0%, var(--surface-2) 100%)" }}>
+        <div className="section-head" style={{ borderBottom: "1px solid var(--line)", paddingBottom: "12px", marginBottom: "20px" }}>
+          <h2>Application Workflow Architecture</h2>
+        </div>
+        <div className="grid three" style={{ gap: "24px" }}>
+          <div style={{ padding: "24px", background: "var(--surface)", borderRadius: "8px", border: "1px solid var(--line)", boxShadow: "var(--shadow-sm)" }}>
+            <span style={{ fontSize: "11px", fontWeight: "8px", color: "var(--primary)", background: "var(--primary-50)", padding: "4px 10px", borderRadius: "999px", textTransform: "uppercase" }}>Phase 01</span>
+            <h3 style={{ color: "var(--ink)", marginTop: "16px", marginBottom: "10px" }}>Structural Parser Ingestion</h3>
+            <p className="muted" style={{ fontSize: "13px", lineHeight: "1.6", margin: 0 }}>
+              Accepts unstructured PDF, DOCX, and plain text files directly. The platform's ingestion pipeline strips document layouts, sanitizes text payloads, maps semantic headings, and detects missing operational segments automatically.
+            </p>
           </div>
-        ) : (
-          <table>
-            <thead>
-              <tr>
-                <th>Title</th>
-                <th>Subject</th>
-                <th>Bloom&rsquo;s level</th>
-                <th>Strategy</th>
-                <th>Date</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {lessons.slice(0, 6).map((l) => (
-                <tr key={l.id}>
-                  <td><strong>{l.title}</strong></td>
-                  <td>{l.subject || <span className="muted">—</span>}</td>
-                  <td><span className={`tag ${bloomClass(l.bloom_level)}`}>{l.bloom_level}</span></td>
-                  <td><span className="tag muted">{l.teaching_strategy}</span></td>
-                  <td className="muted">{new Date(l.created_at).toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" })}</td>
-                  <td><Link to={`/lessons/${l.id}`}>Open</Link></td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
+          <div style={{ padding: "24px", background: "var(--surface)", borderRadius: "8px", border: "1px solid var(--line)", boxShadow: "var(--shadow-sm)" }}>
+            <span style={{ fontSize: "11px", fontWeight: "8px", color: "var(--accent)", background: "var(--accent-50)", padding: "4px 10px", borderRadius: "999px", textTransform: "uppercase" }}>Phase 02</span>
+            <h3 style={{ color: "var(--ink)", marginTop: "16px", marginBottom: "10px" }}>Taxonomy Weight Mapping</h3>
+            <p className="muted" style={{ fontSize: "13px", lineHeight: "1.6", margin: 0 }}>
+              A fine-tuned deep classification engine scans text fragments to map target materials precisely across Bloom's Taxonomy cognitive domains (Remembering to Creating) and pedagogical strategy models.
+            </p>
+          </div>
+          <div style={{ padding: "24px", background: "var(--surface)", borderRadius: "8px", border: "1px solid var(--line)", boxShadow: "var(--shadow-sm)" }}>
+            <span style={{ fontSize: "11px", fontWeight: "8px", color: "var(--warn)", background: "var(--warn-50)", padding: "4px 10px", borderRadius: "999px", textTransform: "uppercase" }}>Phase 03</span>
+            <h3 style={{ color: "var(--ink)", marginTop: "16px", marginBottom: "10px" }}>Empirical Recommendations</h3>
+            <p className="muted" style={{ fontSize: "13px", lineHeight: "1.6", margin: 0 }}>
+              The engine runs comparison algorithms against your criteria rules to catch lesson plan anomalies. It identifies missing structural components and generates actionable steps to refine text delivery structures.
+            </p>
+          </div>
+        </div>
       </div>
     </>
   );

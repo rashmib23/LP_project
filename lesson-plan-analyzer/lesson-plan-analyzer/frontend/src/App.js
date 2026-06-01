@@ -32,10 +32,40 @@ export default function App() {
     </Routes>
   );
 
+  if (isAuthRoute) {
+    return <>{routes}</>;
+  }
+
   return (
-    <>
-      <Navbar />
-      {isAuthRoute ? routes : <main className="container">{routes}</main>}
-    </>
+    <div style={{ display: "flex", height: "100vh", overflow: "hidden" }}>
+      {/* Fixed, Non-Moving Left Navigation Sidebar */}
+      <div style={{ 
+        width: "260px", 
+        minWidth: "260px", 
+        height: "100vh",
+        background: "linear-gradient(180deg, #141b27 0%, #1c2638 100%)",
+        borderRight: "1px solid var(--line)",
+        position: "sticky",
+        top: 0,
+        left: 0,
+        zIndex: 100
+      }}>
+        <Navbar />
+      </div>
+      
+      {/* Independent Vertically Scrolling Workspace Content Panel */}
+      <main style={{ 
+        flexGrow: 1, 
+        height: "100vh",
+        padding: "32px 40px", 
+        background: "var(--bg)", 
+        overflowY: "scroll",
+        WebkitOverflowScrolling: "touch"
+      }}>
+        <div style={{ maxWidth: "1400px", margin: "0 auto" }}>
+          {routes}
+        </div>
+      </main>
+    </div>
   );
 }
