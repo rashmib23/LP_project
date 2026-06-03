@@ -18,14 +18,13 @@ HIGHER_ORDER = {"Apply", "Analyze", "Evaluate", "Create"}
 
 def _has_section(sections: dict, primary_name: str) -> bool:
     """
-    Robust section validator. Inspects alternative synonymous heading keys
-    to ensure section detection remains bulletproof against slight template variations.
+    Robust context-aware section validator. 
+    Checks synonymous variations of system text headers to verify actual content presence.
     """
     synonyms = {
-        "objectives": ["objectives", "learning_objectives", "aims"],
-        "activities": ["activities", "teaching_activities", "methods", "teaching_methods", "strategies"],
-        "assessment": ["assessment", "evaluation", "assessment_strategy", "assessment_methods"],
-        "outcomes": ["outcomes", "course_outcomes", "learning_outcomes", "co"]
+        "objectives": ["objectives", "learning_objectives", "aims", "learning objectives"],
+        "activities": ["activities", "teaching_activities", "methods", "teaching_methods", "strategies", "content outline"],
+        "assessment": ["assessment", "evaluation", "assessment_strategy", "assessment strategy"]
     }
     
     target_keys = synonyms.get(primary_name, [primary_name])
@@ -36,12 +35,11 @@ def _has_section(sections: dict, primary_name: str) -> bool:
 
 
 def _get_section_content(sections: dict, primary_name: str) -> str:
-    """Safe helper to extract text content from synonymous section variations."""
+    """Safe extraction helper to collect text payloads from synonymous dictionary keys."""
     synonyms = {
-        "objectives": ["objectives", "learning_objectives", "aims"],
-        "activities": ["activities", "teaching_activities", "methods", "teaching_methods", "strategies"],
-        "assessment": ["assessment", "evaluation", "assessment_strategy", "assessment_methods"],
-        "outcomes": ["outcomes", "course_outcomes", "learning_outcomes", "co"]
+        "objectives": ["objectives", "learning_objectives", "aims", "learning objectives"],
+        "activities": ["activities", "teaching_activities", "methods", "teaching_methods", "strategies", "content outline"],
+        "assessment": ["assessment", "evaluation", "assessment_strategy", "assessment strategy"]
     }
     
     target_keys = synonyms.get(primary_name, [primary_name])
@@ -93,7 +91,7 @@ def generate_recommendations(*, text: str, bloom_level: str, teaching_strategy: 
             ),
         })
 
-    # 2. Teaching strategy diversity (Enhanced with regex boundaries to prevent substring substring collisions)
+    # 2. Teaching strategy diversity (Enhanced with token regex bounds to eliminate substring overlap)
     cue_hits = {s: 0 for s in STRATEGIES}
     cue_patterns = {
         "Lecture-based": [r"\blecture\b", r"\bslides\b", r"\bexplain\b", r"\bpresentation\b"],
@@ -163,7 +161,7 @@ def generate_recommendations(*, text: str, bloom_level: str, teaching_strategy: 
             ),
         })
 
-    # 4. Section completeness (Enhanced to check against synonymous structural fields)
+    # 4. Section completeness (Utilizes context helper to evaluate synonyms accurately)
     missing = [s for s in ["objectives", "activities", "assessment"] if not _has_section(sections, s)]
     if missing:
         recs.append({
@@ -177,7 +175,7 @@ def generate_recommendations(*, text: str, bloom_level: str, teaching_strategy: 
             ),
         })
 
-    # 5. Action-verb specificity in objectives (Enhanced context scanning logic)
+    # 5. Action-verb specificity in objectives
     obj_text = _get_section_content(sections, "objectives")
     if obj_text:
         obj_l = obj_text.lower()
@@ -223,7 +221,7 @@ def generate_recommendations(*, text: str, bloom_level: str, teaching_strategy: 
 
     # 7. Topic relevance / freshness
     if subject and len(subject.strip()) > 0:
-        clean_subject = subject.split('(')[0].strip().lower() # strips system branch IDs safely
+        clean_subject = subject.split('(')[0].strip().lower() # strips course code postfix blocks
         if clean_subject not in text_l:
             recs.append({
                 "category": "Topic relevance",
@@ -250,7 +248,7 @@ def summarize_analysis(*, text: str, classification: Dict,
 
     higher_order_share = sum(bloom_dist.get(l, 0.0) for l in HIGHER_ORDER)
     
-    # Track cross-synonymous maps to evaluate visibility state metrics accurately
+    # Validates logical visibility mapping accurately for structural metrics tracking
     detected_keys = list(sections.keys())
     missing_sections = []
     for s in ["objectives", "activities", "assessment"]:
