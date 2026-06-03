@@ -49,14 +49,11 @@ def add_performance():
 @performance_bp.route("/bulk", methods=["POST"])
 @jwt_required()
 def bulk_upload():
-    """Upload a CSV with columns:
-       student_name, roll_no, assessment, score, max_score, remarks, lesson_plan_id
+    """Upload a clean CSV file linked directly to a selected Lesson Plan dropdown option.
 
     Form fields:
-       file                       - the CSV (required)
-       ignore_invalid_lesson_id   - "1"/"true" to save rows as unlinked when the
-                                    lesson_plan_id doesn't belong to this user,
-                                    instead of rejecting the row.
+       file            - the CSV data spreadsheet file (required)
+       lesson_plan_id  - the target lesson ID parameter chosen from the UI dropdown (optional)
     """
     uid = int(get_jwt_identity())
     if "file" not in request.files:
@@ -73,38 +70,28 @@ def bulk_upload():
     except UnicodeDecodeError:
         return jsonify(error="CSV must be UTF-8 encoded"), 400
 
-    flag = (request.form.get("ignore_invalid_lesson_id") or "").lower()
-    forgive_missing_lp = flag in ("1", "true", "yes", "on")
+    # Extract single lesson_plan_id sent dynamically from the frontend dropdown form field parameters
+    form_lp_id = request.form.get("lesson_plan_id")
+    lp_id = None
+
+    if form_lp_id and form_lp_id.strip() != "":
+        try:
+            target_id = int(form_lp_id)
+            # Secure database authorization context checks
+            if LessonPlan.query.filter_by(id=target_id, user_id=uid).first():
+                lp_id = target_id
+            else:
+                return jsonify(error="The selected lesson plan was not found or access is unauthorized"), 404
+        except ValueError:
+            return jsonify(error="Invalid lesson plan ID parameter provided"), 400
 
     reader = csv.DictReader(io.StringIO(content))
     created = 0
-    relinked = 0   # rows whose lesson_plan_id was unknown and was saved as null
     errors = []
+    
     for i, row in enumerate(reader, start=2):  # data rows start at line 2
         try:
-            raw_lp = (row.get("lesson_plan_id") or "").strip()
-            lp_id = None
-            if raw_lp:
-                try:
-                    lp_id = int(raw_lp)
-                except ValueError:
-                    if forgive_missing_lp:
-                        lp_id = None
-                        relinked += 1
-                    else:
-                        errors.append(f"Row {i}: lesson_plan_id '{raw_lp}' is not a number")
-                        continue
-                else:
-                    if not LessonPlan.query.filter_by(id=lp_id, user_id=uid).first():
-                        if forgive_missing_lp:
-                            lp_id = None
-                            relinked += 1
-                        else:
-                            errors.append(
-                                f"Row {i}: lesson_plan_id {lp_id} not found "
-                                f"(it doesn't belong to your account)"
-                            )
-                            continue
+            # All lines automatically attach directly to the dropdown value target lp_id
             rec = StudentPerformance(
                 user_id=uid,
                 lesson_plan_id=lp_id,
@@ -119,8 +106,9 @@ def bulk_upload():
             created += 1
         except Exception as e:
             errors.append(f"Row {i}: {e}")
+            
     db.session.commit()
-    return jsonify(created=created, relinked=relinked, errors=errors)
+    return jsonify(created=created, relinked=0, errors=errors)
 
 
 @performance_bp.route("/", methods=["GET"])

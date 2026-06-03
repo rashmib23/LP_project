@@ -16,13 +16,44 @@ from .pdf_parser import split_sections
 HIGHER_ORDER = {"Apply", "Analyze", "Evaluate", "Create"}
 
 
-def _has_section(sections: dict, name: str) -> bool:
-    return bool(sections.get(name) and len(sections[name].strip()) >= 10)
+def _has_section(sections: dict, primary_name: str) -> bool:
+    """
+    Robust section validator. Inspects alternative synonymous heading keys
+    to ensure section detection remains bulletproof against slight template variations.
+    """
+    synonyms = {
+        "objectives": ["objectives", "learning_objectives", "aims"],
+        "activities": ["activities", "teaching_activities", "methods", "teaching_methods", "strategies"],
+        "assessment": ["assessment", "evaluation", "assessment_strategy", "assessment_methods"],
+        "outcomes": ["outcomes", "course_outcomes", "learning_outcomes", "co"]
+    }
+    
+    target_keys = synonyms.get(primary_name, [primary_name])
+    for key in target_keys:
+        if key in sections and sections[key] and len(str(sections[key]).strip()) >= 15:
+            return True
+    return False
+
+
+def _get_section_content(sections: dict, primary_name: str) -> str:
+    """Safe helper to extract text content from synonymous section variations."""
+    synonyms = {
+        "objectives": ["objectives", "learning_objectives", "aims"],
+        "activities": ["activities", "teaching_activities", "methods", "teaching_methods", "strategies"],
+        "assessment": ["assessment", "evaluation", "assessment_strategy", "assessment_methods"],
+        "outcomes": ["outcomes", "course_outcomes", "learning_outcomes", "co"]
+    }
+    
+    target_keys = synonyms.get(primary_name, [primary_name])
+    for key in target_keys:
+        if key in sections and sections[key]:
+            return str(sections[key]).strip()
+    return ""
 
 
 def generate_recommendations(*, text: str, bloom_level: str, teaching_strategy: str,
-                              course_outcome: str = "", program_outcome: str = "",
-                              subject: str = "") -> List[Dict]:
+                             course_outcome: str = "", program_outcome: str = "",
+                             subject: str = "") -> List[Dict]:
     """
     Returns a list of {category, severity, suggestion} dicts.
     """
@@ -38,8 +69,8 @@ def generate_recommendations(*, text: str, bloom_level: str, teaching_strategy: 
             "suggestion": (
                 f"The lesson is dominated by lower-order thinking ({bloom_level}). "
                 f"Add at least one higher-order activity (Apply / Analyze / Evaluate / Create). "
-                "For example, include a problem-solving task, a comparative analysis, "
-                "or a small design challenge."
+                f"For example, include a problem-solving task, a comparative analysis, "
+                f"or a small design challenge."
             ),
         })
     elif bloom_level == "Apply":
@@ -62,18 +93,18 @@ def generate_recommendations(*, text: str, bloom_level: str, teaching_strategy: 
             ),
         })
 
-    # 2. Teaching strategy diversity
+    # 2. Teaching strategy diversity (Enhanced with regex boundaries to prevent substring substring collisions)
     cue_hits = {s: 0 for s in STRATEGIES}
-    cue_terms = {
-        "Lecture-based": ["lecture", "slides", "explain"],
-        "Inquiry-based": ["inquiry", "investigate", "hypothesis"],
-        "Activity-based": ["activity", "hands-on", "exercise"],
-        "Project-based": ["project", "prototype", "deliverable"],
-        "Discussion-based": ["discussion", "debate", "brainstorm"],
-        "Demonstration-based": ["demonstration", "demonstrate", "show how"],
+    cue_patterns = {
+        "Lecture-based": [r"\blecture\b", r"\bslides\b", r"\bexplain\b", r"\bpresentation\b"],
+        "Inquiry-based": [r"\binquiry\b", r"\binvestigate\b", r"\bhypothesis\b", r"\bresearch\b"],
+        "Activity-based": [r"\bactivity\b", r"\bhands-on\b", r"\bexercise\b", r"\bworksheet\b", r"\btask\b"],
+        "Project-based": [r"\bproject\b", r"\bprototype\b", r"\bdeliverable\b", r"\bbuild\b"],
+        "Discussion-based": [r"\bdiscussion\b", r"\bdebate\b", r"\bbrainstorm\b", r"\bpeer critique\b"],
+        "Demonstration-based": [r"\bdemonstration\b", r"\bdemonstrate\b", r"\bshow how\b", r"\bwalkthrough\b"],
     }
-    for s, words in cue_terms.items():
-        cue_hits[s] = sum(text_l.count(w) for w in words)
+    for s, patterns in cue_patterns.items():
+        cue_hits[s] = sum(len(re.findall(p, text_l)) for p in patterns)
     distinct = sum(1 for v in cue_hits.values() if v > 0)
 
     if teaching_strategy == "Lecture-based" and distinct <= 1:
@@ -93,8 +124,8 @@ def generate_recommendations(*, text: str, bloom_level: str, teaching_strategy: 
             "severity": "medium",
             "suggestion": (
                 f"Primary strategy is {teaching_strategy}. Adding a second "
-                "strategy (e.g. demonstration + activity, or lecture + discussion) "
-                "broadens learning styles supported."
+                f"strategy (e.g. demonstration + activity, or lecture + discussion) "
+                f"broadens learning styles supported."
             ),
         })
     else:
@@ -103,12 +134,13 @@ def generate_recommendations(*, text: str, bloom_level: str, teaching_strategy: 
             "severity": "low",
             "suggestion": (
                 f"Good strategy mix detected (primary: {teaching_strategy}). "
-                "Document time allocation per strategy to keep pacing realistic."
+                f"Document time allocation per strategy to keep pacing realistic."
             ),
         })
 
     # 3. CO / PO alignment
-    if not course_outcome.strip() and not re.search(r"\b(co\d+|course outcome)\b", text_l):
+    has_co_marker = re.search(r"\b(co\d+|course outcome|course_outcomes)\b", text_l)
+    if not course_outcome.strip() and not has_co_marker:
         recs.append({
             "category": "CO/PO alignment",
             "severity": "high",
@@ -118,7 +150,9 @@ def generate_recommendations(*, text: str, bloom_level: str, teaching_strategy: 
                 "attainment expected."
             ),
         })
-    if not program_outcome.strip() and not re.search(r"\b(po\d+|program outcome)\b", text_l):
+        
+    has_po_marker = re.search(r"\b(po\d+|program outcome|program_outcomes)\b", text_l)
+    if not program_outcome.strip() and not has_po_marker:
         recs.append({
             "category": "CO/PO alignment",
             "severity": "medium",
@@ -129,7 +163,7 @@ def generate_recommendations(*, text: str, bloom_level: str, teaching_strategy: 
             ),
         })
 
-    # 4. Section completeness
+    # 4. Section completeness (Enhanced to check against synonymous structural fields)
     missing = [s for s in ["objectives", "activities", "assessment"] if not _has_section(sections, s)]
     if missing:
         recs.append({
@@ -139,12 +173,12 @@ def generate_recommendations(*, text: str, bloom_level: str, teaching_strategy: 
                 "The following sections are missing or thin: "
                 + ", ".join(missing)
                 + ". Add explicit Learning Objectives, Activities, and Assessment "
-                "items so the lesson plan is self-sufficient."
+                f"items so the lesson plan is self-sufficient."
             ),
         })
 
-    # 5. Action-verb specificity in objectives
-    obj_text = sections.get("objectives", "") or ""
+    # 5. Action-verb specificity in objectives (Enhanced context scanning logic)
+    obj_text = _get_section_content(sections, "objectives")
     if obj_text:
         obj_l = obj_text.lower()
         verbs_seen = set()
@@ -173,9 +207,9 @@ def generate_recommendations(*, text: str, bloom_level: str, teaching_strategy: 
             })
 
     # 6. Assessment alignment
-    assess_text = sections.get("assessment", "") or ""
+    assess_text = _get_section_content(sections, "assessment")
     if assess_text:
-        if re.search(r"\b(mcq|multiple choice|recall|true/false)\b", assess_text.lower()) \
+        if re.search(r"\b(mcq|multiple choice|recall|true/false|quiz|oral|verbal)\b", assess_text.lower()) \
            and bloom_level in {"Analyze", "Evaluate", "Create"}:
             recs.append({
                 "category": "Assessment alignment",
@@ -183,20 +217,21 @@ def generate_recommendations(*, text: str, bloom_level: str, teaching_strategy: 
                 "suggestion": (
                     f"Assessment looks recall-oriented but the lesson targets "
                     f"{bloom_level}. Add open-ended, rubric-based questions or a "
-                    "short project to assess higher-order outcomes."
+                    f"short project to assess higher-order outcomes."
                 ),
             })
 
     # 7. Topic relevance / freshness
-    if subject and len(subject) > 0:
-        if subject.lower() not in text_l:
+    if subject and len(subject.strip()) > 0:
+        clean_subject = subject.split('(')[0].strip().lower() # strips system branch IDs safely
+        if clean_subject not in text_l:
             recs.append({
                 "category": "Topic relevance",
                 "severity": "low",
                 "suggestion": (
                     f"The subject '{subject}' is not explicitly mentioned in the "
-                    "body of the plan. Reinforce vocabulary so students can "
-                    "connect the lesson to its course context."
+                    f"body of the plan. Reinforce vocabulary so students can "
+                    f"connect the lesson to its course context."
                 ),
             })
 
@@ -204,7 +239,7 @@ def generate_recommendations(*, text: str, bloom_level: str, teaching_strategy: 
 
 
 def summarize_analysis(*, text: str, classification: Dict,
-                        course_outcome: str = "", program_outcome: str = "") -> Dict:
+                       course_outcome: str = "", program_outcome: str = "") -> Dict:
     """Compact analysis bundle for the UI."""
     sections = split_sections(text)
     word_count = len(re.findall(r"\w+", text))
@@ -214,18 +249,24 @@ def summarize_analysis(*, text: str, classification: Dict,
     strategy_dist = classification.get("strategy", {}).get("scores", {})
 
     higher_order_share = sum(bloom_dist.get(l, 0.0) for l in HIGHER_ORDER)
+    
+    # Track cross-synonymous maps to evaluate visibility state metrics accurately
+    detected_keys = list(sections.keys())
+    missing_sections = []
+    for s in ["objectives", "activities", "assessment"]:
+        if not _has_section(sections, s):
+            missing_sections.append(s)
 
     return {
         "word_count": word_count,
         "sentence_count": sentence_count,
-        "sections_detected": list(sections.keys()),
-        "missing_sections": [s for s in ["objectives", "activities", "assessment", "outcomes"]
-                              if s not in sections],
+        "sections_detected": detected_keys,
+        "missing_sections": missing_sections,
         "bloom_distribution": bloom_dist,
         "strategy_distribution": strategy_dist,
         "higher_order_thinking_share": round(higher_order_share, 4),
-        "co_provided": bool(course_outcome.strip()),
-        "po_provided": bool(program_outcome.strip()),
+        "co_provided": bool(course_outcome.strip() or re.search(r"\b(co\d+|course outcome)\b", text.lower())),
+        "po_provided": bool(program_outcome.strip() or re.search(r"\b(po\d+|program outcome)\b", text.lower())),
         "model_used": {
             "bloom": classification.get("bloom", {}).get("model", "keyword"),
             "strategy": classification.get("strategy", {}).get("model", "keyword"),
